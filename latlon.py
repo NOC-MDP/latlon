@@ -83,48 +83,62 @@ class LL(object):
             return "%f %f"%(tmp[0],tmp[1])
 
     def __init__(self,lat,lon,format='decimal'):
-        self.initial_format=format
+        if not format in ['decimal','nmea']:
+            raise ValueError("lat/lon format should be either 'decimal' or 'nmea'")
         self.format=format
-        self.lat=lat
-        self.lon=lon
-        if format=='nmea':
-            self._lat=self._toRad(convertToDecimal(lat))
-            self._lon=self._toRad(convertToDecimal(lon))
+        if format=='decimal':
+            self._lat=lat
+            self._lon=lon
         else:
-            self._lat=self._toRad(lat)
-            self._lon=self._toRad(lon)
+            self._lat,self._lon=convertToDecimal(lat,lon)
+        self.dx=None
+        self.dy=None
 
-        self._v=N.matrix([N.cos(self._lon)*N.cos(self._lat),
-                          N.sin(self._lon)*N.cos(self._lat),
-                          N.sin(self._lat)])
+        _lon=self._toRad(self._lon)
+        _lat=self._toRad(self._lat)
+        self._v=N.matrix([N.cos(_lon)*N.cos(_lat),
+                          N.sin(_lon)*N.cos(_lat),
+                          N.sin(_lat)])
+
+    def __call__(self):
+        return self._lat,self._lon
+
+    @property
+    def lat(self):
+        if self.format=='nmea':
+            return convertToNmea(self._lat)
+        else:
+            return self._lat
+
+    @property
+    def lon(self):
+        if self.format=='nmea':
+            return convertToNmea(self._lon)
+        else:
+            return self._lon
 
     def set_lat(self,lat):
         if self.format=="nmea":
-            self._lat=self._toRad(convertToDecimal(lat))
+            self._lat=convertToDecimal(lat)
         else:
-            self._lat=self._toRad(lat)
+            self._lat=lat
 
     def set_lon(self,lon):
         if self.format=="nmea":
-            self._lon=self._toRad(convertToDecimal(lon))
+            self._lon=convertToDecimal(lon)
         else:
-            self._lon=self._toRad(lon)
+            self._lon=lon
 
     def set_latlon(self,lat,lon):
         self.set_lat(lat)
         self.set_lon(lon)
 
+
     def _toRad(self,x):
         return x*N.pi/180.
 
-    def set_format(self,fmt):
-        self.format=fmt
-
-    def decimal(self):
-        self.set_format('decimal')
-
     def nmea(self):
-        self.set_format('nmea')
+        return convertToNmea(self._lat,self._lon)
 
     def distance(self,p):
         cs=(self._v*p._v.T)[0,0]
@@ -140,7 +154,7 @@ class LL(object):
 
     @property
     def Rot(self):
-        phi=-self._lon
+        phi=-self._toRad(self._lon)
         r=N.matrix([[N.cos(phi),N.sin(phi),0],
                     [-N.sin(phi),N.cos(phi),0],
                     [0,           0          ,1]])
@@ -150,11 +164,14 @@ class LL(object):
         PcrossQ=N.cross(self._v,p._v)
         PcrossQp=PcrossQ*self.Rot
         Evector=N.matrix([0,1.,0])
-        Nvector=N.matrix([-N.sin(self._lat),0,N.cos(self._lat)])
+        _lat=self._toRad(self._lat)
+        _lon=self._toRad(self._lon)
+        #is this correct???
+        Nvector=N.matrix([-N.sin(_lat),0,N.cos(_lat)])
         y=(PcrossQp*Nvector.T)[0,0]
         x=(PcrossQp*Evector.T)[0,0]
         phi=N.arctan2(y,x)
-        return 180-phi*180./N.pi
+        return (180-phi*180./N.pi+360)%360
 
 
 class LatLon(object):
@@ -283,3 +300,16 @@ class LatLon(object):
         lon=newLatLon[1]
         return LatLon(lat,lon,"decimal")
 
+
+
+
+if __name__=="__main__":
+    P=LatLon(54,8,'decimal')
+    Q=LatLon(5500,800,'nmea')
+    print(P.distance(Q))
+    print(P.bearing(Q))
+
+    p=LL(54,8,'decimal')
+    q=LL(5500,800,'nmea')
+    print(p.distance(p))
+    print(q.bearing(q))
