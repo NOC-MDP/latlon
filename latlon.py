@@ -140,6 +140,24 @@ class LL(object):
     def nmea(self):
         return convertToNmea(self._lat,self._lon)
 
+    def standard_string(self):
+        if self._lat>0:
+            lat_modifier = "N"
+        else:
+           lat_modifier = "S"
+        if self._lon>0:
+            lon_modifier = "E"
+        else:
+            lon_modifier = "W"
+        lat_nmea,lon_nmea = convertToNmea(abs(self._lat),abs(self._lon))
+        lat_deg = int(lat_nmea/100)
+        lon_deg = int(lon_nmea/100)
+        lat_min = lat_nmea - 100*lat_deg
+        lon_min = lon_nmea - 100*lon_deg
+        return ("%02d%s%6.3f"%(lat_deg,lat_modifier,lat_min),
+                "%02d%s%6.3f"%(lon_deg,lon_modifier,lon_min))
+        
+
     def distance(self,p):
         cs=(self._v*p._v.T)[0,0]
         if cs>=1:
@@ -199,6 +217,23 @@ class LatLon(object):
 
     def nmea(self):
         return convertToNmea(self._lat,self._lon)
+
+    def standard_string(self):
+        if self._lat>0:
+            lat_modifier = "N"
+        else:
+           lat_modifier = "S"
+        if self._lon>0:
+            lon_modifier = "E"
+        else:
+            lon_modifier = "W"
+        lat_nmea,lon_nmea = convertToNmea(abs(self._lat),abs(self._lon))
+        lat_deg = int(lat_nmea/100)
+        lon_deg = int(lon_nmea/100)
+        lat_min = lat_nmea - 100*lat_deg
+        lon_min = lon_nmea - 100*lon_deg
+        return ("%02d%s%06.3f"%(lat_deg,lat_modifier,lat_min),
+                "%02d%s%06.3f"%(lon_deg,lon_modifier,lon_min))
 
     @property
     def lat(self):

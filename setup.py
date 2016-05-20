@@ -12,7 +12,7 @@ setup (name = 'latlon',
        author = 'Lucas Merckelbach',
        author_email = 'lmm@noc.soton.ac.uk',
        url = '',
-       py_modules=['latlon','gps'],
+       py_modules=['latlon'],
        packages = [],
        long_description ='A bundle of classes useful when working with lat/lon coordinates')
 
