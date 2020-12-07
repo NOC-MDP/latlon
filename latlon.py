@@ -307,7 +307,7 @@ class LatLon(object):
                 else:
                     offset=0
                 positions.append((R[0][0]+offset,R[0][1]))
-            return positions,zones,zonesAlt
+            return N.array(positions).T,zones,zonesAlt
 
     def translate(self,dx,dy):
         ''' translates a waypoint of dx (east), dy (north) '''
@@ -322,6 +322,13 @@ class LatLon(object):
         lat=newLatLon[0]
         lon=newLatLon[1]
         return LatLon(lat,lon,"decimal")
+
+    def translate_radial(self,r, degrees):
+        ''' translates a waypoint into the direction degrees (0-360, and 0 north), over r metres.'''
+        angle = N.pi/2 - N.pi*degrees/180.
+        dx = r * N.cos(angle)
+        dy = r * N.sin(angle)
+        return self.translate(dx, dy)
 
 
 
