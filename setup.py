@@ -28,7 +28,7 @@ latlonUTM_ext = Extension('_latlonUTM',
                           sources = ['extension/_latlonUTMmodule.c',\
                                      'extension/latlon.c',\
                                      'extension/latlong_utm.c'])
-    
+
 setup(
     name=about['name'],
     version=about['__version__'],
