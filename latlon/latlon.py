@@ -8,13 +8,9 @@ convertToNmea()
 classes:
 LatLon - for defining lat/lon coordinates
 '''
-import sys
+
 import numpy as N
-try:
-    import latlonUTM
-except ImportError:
-    sys.stderr.write("Warning: Could not import module latlonUTM.\n")
-    sys.stderr.write("Warning: Using LatLon class will fail. Use LL instead.\n")
+import latlonUTM
 
 
 # module methods.
@@ -330,16 +326,3 @@ class LatLon(object):
         dy = r * N.sin(angle)
         return self.translate(dx, dy)
 
-
-
-
-if __name__=="__main__":
-    P=LatLon(54,8,'decimal')
-    Q=LatLon(5500,800,'nmea')
-    print(P.distance(Q))
-    print(P.bearing(Q))
-
-    p=LL(54,8,'decimal')
-    q=LL(5500,800,'nmea')
-    print(p.distance(p))
-    print(q.bearing(q))

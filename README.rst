@@ -19,11 +19,5 @@ points etc.
 
 Distance calculations are based on the latlonUTM package.
 
-Installation
-------------
-
-The installation of the package requires compiling C-code for the
-latlonUTM module. Therefore, a correct installation of these packages
-may require the installation of gcc and the development headers of python.
-
-
+Transformation between lat/lon and UTM is now based on pyproj, in 
+favour of a C extension.
