@@ -19,15 +19,6 @@ with open('requirements.txt') as fobj:
     install_requires = [line.strip() for line in fobj]
 
 
-latlonUTM_ext = Extension('_latlonUTM',
-                          define_macros = [('MAJOR_VERSION', '0'),
-                                           ('MINOR_VERSION', '1')],
-                          include_dirs = ['./include'],
-                          libraries = [],
-                          library_dirs = ['.'],
-                          sources = ['extension/_latlonUTMmodule.c',\
-                                     'extension/latlon.c',\
-                                     'extension/latlong_utm.c'])
 
 setup(
     name=about['name'],
@@ -39,7 +30,6 @@ setup(
     author_email='lucas.merckelbach@hzg.de',
     license='GPLv3',
     packages=find_packages(where='.', exclude=['tests', 'docs', 'examples']),
-    ext_modules = [latlonUTM_ext],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Science/Research',
@@ -55,12 +45,6 @@ setup(
     include_package_data=True,
     #scripts=[''],
     #py_modules=[''],
-
 )
-# how to provide scripts etct
-#      py_modules = ['fastachar'],
-#      entry_points = {'console_scripts':[],#['fastachar_gui = fastachar_gui:main
-#                      'gui_scripts':['fastachar = fastachar:main']
-#                      },
 
 
