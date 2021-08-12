@@ -19,5 +19,6 @@ points etc.
 
 Distance calculations are based on the latlonUTM package.
 
-Transformation between lat/lon and UTM is now based on pyproj, in 
-favour of a C extension.
+Transformation between lat/lon and UTM is now based on utm, in 
+favour of a C extension. Pyproj has been considered but was found too
+slow.
